@@ -17,6 +17,12 @@ st.session_state['nombre'] = AGENTES[st.experimental_user["email"]]
 # Zona horaria de la Ciudad de México    
 st.session_state['zona_horaria'] = pytz.timezone('America/Mexico_City')
 
+if st.session_state.get('css_classes') is None:
+    with open('./stylesheet.html', 'r') as f:
+        st.session_state.css_classes = f.read()
+
+st.write(st.session_state.css_classes, unsafe_allow_html=True)
+
 
 if __name__ == "__main__":
 
@@ -25,7 +31,7 @@ if __name__ == "__main__":
     with inicio:
         Home()
     with sesion:
-        Sesion()
+        Sesion({})
     with busqueda:
         Busqueda()
     with dashboard:

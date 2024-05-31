@@ -43,3 +43,11 @@ def NumberField(key, label, value = 0, parent = st, border = True):
         with col2:
             number = parent.number_input("empty", value = value, key = key, label_visibility="collapsed")
     return number
+
+def TextField(key, label, value ="", parent = st, border = True):
+    with parent.container(border = border):
+        col1, col2 = parent.columns([1,2])
+        with col1:
+            parent.write(f"**{label}**")
+        with col2:
+            text = parent.text_input("empty", value = value, key = key, label_visibility="collapsed")

@@ -1,4 +1,6 @@
 import streamlit as st
+from const import SCHEMAS
+import pandas as pd
 
 def separar_numero(numero):
     if len(numero) != 10 or not numero.isdigit():
@@ -14,3 +16,7 @@ def num2curr(x):
 
 def session_state(key):
     return st.session_state.get(key)
+
+def get_dummy_table(key):
+    table_columns = [{k: '' for k in SCHEMAS[key].values()}]
+    return pd.DataFrame(table_columns)
