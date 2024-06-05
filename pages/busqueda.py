@@ -4,11 +4,17 @@ from components.fields import TextField, SelectField
 from components.button import Button
 from components.table import Table
 from components.br import BR
+from page_config import inject_navbar, inject_table_css, require_login
 from utils import session_state, get_dummy_table
 from const import SCHEMAS
 import pandas as pd
 
-def Busqueda(parent = st):
+st.set_page_config(page_title="CRM - Búsqueda", page_icon="./img/logo_pernexium.png", layout="wide")
+
+@inject_navbar
+@inject_table_css
+@require_login
+def render(parent = st):
 
     with parent.container(border = True):
         parent.header("Busqueda")
@@ -41,9 +47,6 @@ def Busqueda(parent = st):
             RegistroDictaminacion("busqueda", parent)
 
 
-
-
-
 def handle_buscar():
 
     data = dict(
@@ -62,3 +65,6 @@ def handle_buscar():
     #
 
     st.session_state['buscar_tabla'] = get_dummy_table("credito")
+
+
+render()

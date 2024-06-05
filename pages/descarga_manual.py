@@ -1,6 +1,11 @@
 import streamlit as st
+from page_config import inject_navbar, require_login
 
-def DescargaManual():
+st.set_page_config(page_title="CRM - Descarga Manual", page_icon="./img/logo_pernexium.png", layout="wide")
+
+@inject_navbar
+@require_login
+def render():
     st.header("Descarga Manual")
 
     st.write("En esta sección podrás descargar la información de tus clientes en formato xlsx en caso de que el sistema haya fallado en la asignación automática")
@@ -12,3 +17,5 @@ def DescargaManual():
 
 def download_manual():
     st.toast("Descarga exitosa")
+
+render()

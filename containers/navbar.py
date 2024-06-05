@@ -1,5 +1,5 @@
 import streamlit as st
-
+from components.button import Button
 
 def Navbar(labels, callbacks, parent = st, border = True):
     with parent.container(border = border):    
@@ -7,5 +7,5 @@ def Navbar(labels, callbacks, parent = st, border = True):
 
         for col, label, callback in zip(cols, labels, callbacks):
             with col:
-                if parent.button(label):
+                if Button(None, label, None, "secondary", parent):
                     callback()

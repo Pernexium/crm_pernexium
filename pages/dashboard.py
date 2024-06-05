@@ -4,8 +4,15 @@ from const import DIAS, BAR_HEIGHT, COLORS, MESES
 from components.kpi import KPI
 from components.br import BR
 from components.fields import SelectField
+from page_config import inject_navbar, inject_table_css, require_login
 
-def Dashboard(parent = st):
+st.set_page_config(page_title="CRM - Dashboard", page_icon="./img/logo_pernexium.png", layout="wide")
+
+
+@inject_table_css
+@inject_navbar
+@require_login
+def render(parent = st):
     parent.header("Dashboard")
 
     _, kpi_container, _ = parent.columns([1/4, 1/2, 1/4])
@@ -42,3 +49,5 @@ def Dashboard(parent = st):
         )
 
         parent.plotly_chart(fig)
+
+render()

@@ -1,16 +1,25 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from const import ARBOL_DICTAMINACION, AGENTES, SCHEMAS
+from const import ARBOL_DICTAMINACION
 from components.table import Table
 from components.fields import DataField
 from components.br import BR
 from components.button import Button
 from containers.registro_dictaminacion import RegistroDictaminacion
 from utils import *
+from page_config import inject_navbar, inject_table_css, require_login
 
-def Sesion(credito, parent = st):
-    
+st.set_page_config(page_title="CRM - Sesión", page_icon="./img/logo_pernexium.png", layout="wide")
+
+
+@inject_navbar
+@inject_table_css
+@require_login
+def render(parent = st):
+
+    fetch_assignments()
+
     BR(3, parent)
     
     SesionNav()
@@ -52,8 +61,7 @@ def Sesion(credito, parent = st):
             BR(2, parent)
 
         with registro:
-            RegistroDictaminacion("sesion", credito, parent, border = False)
-
+            RegistroDictaminacion("sesion", {}, parent, border = False)
 
 
 def SesionNav(parent = st):
@@ -66,10 +74,12 @@ def SesionNav(parent = st):
             with siguiente:
                 Button("session_next", "Siguiente", callback= session_next, parent = parent)
 
-
-
 def session_previous():
     print("previous")
 
 def session_next():
     print("next")
+
+
+
+render()

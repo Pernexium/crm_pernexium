@@ -25,12 +25,6 @@ ARBOL_DICTAMINACION = {
 }
 
 
-AGENTES = {
-    "test@example.com":"Carlos Alberto García García",
-    "test@test.com":"Carlos Alberto García García",
-    "enrique.ramirez@pernexium.com": "Enrique Ramírez"
-}
-
 SCHEMAS = {
     "dictaminacion": {
         "id": "Id",

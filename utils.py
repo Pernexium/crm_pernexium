@@ -1,6 +1,7 @@
 import streamlit as st
 from const import SCHEMAS
 import pandas as pd
+from cliente_sql import SqlClient
 
 def separar_numero(numero):
     if len(numero) != 10 or not numero.isdigit():
@@ -17,6 +18,23 @@ def num2curr(x):
 def session_state(key):
     return st.session_state.get(key)
 
+def user_data(key):
+    return st.session_state.get('logged_in').get(key)
+
 def get_dummy_table(key):
     table_columns = [{k: '' for k in SCHEMAS[key].values()}]
     return pd.DataFrame(table_columns)
+
+
+def use_sql_client(func):
+    if not session_state('sql_client'):
+        if not st.secrets.db_credentials:
+            st.error("No se encontraron las credenciales de la base de datos.")
+        st.session_state['sql_client'] = SqlClient(**st.secrets.db_credentials)
+
+    return func
+
+
+@use_sql_client
+def fetch_assignments():
+    print(f"ASSIGNMENTS PARA USUARIO: {user_data('agent_name'), user_data('agent_id')}")
