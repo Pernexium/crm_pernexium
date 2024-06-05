@@ -4,6 +4,8 @@ from components.br import BR
 from components.button import Button
 from page_config import inject_navbar, require_login
 from sqlalchemy import create_engine, text
+import hashlib
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 st.set_page_config(page_title="CRM - Registro Usuario", page_icon="./img/logo_pernexium.png", layout="wide")
 if 'campaigns_dict' not in st.session_state:
@@ -28,7 +30,7 @@ def render(parent = st):
   
             correo = TextField("correo_registro_usuario", "Correo", "", parent, border = False)
     
-            campania = SelectField("select_campaing", "Camapaña", st.session_state.campaigns_dict.keys(), parent = st, border = False)
+            campania = SelectField("select_campaing", "Campaña", st.session_state.campaigns_dict.keys(), parent = st, border = False)
 
             password = PasswordField("password_registro_usuario", "Contraseña", "", parent, border = False)
 
@@ -63,6 +65,7 @@ def get_campaings_name():
 
     return dict_names
 
+
 def insert_user(nombre, correo, password, campaign_id):
     engine = get_engine()
     insert_query = text("INSERT INTO users (campaign_id, name, email, pass) VALUES (:campaign_id, :nombre, :correo, :password)")
@@ -70,9 +73,25 @@ def insert_user(nombre, correo, password, campaign_id):
     try:
         with engine.connect() as connection:
             connection.execute(insert_query, {"campaign_id": campaign_id, "nombre": nombre, "correo": correo, "password": password})
+        st.toast("Usuario registrado con éxito")
+    except IntegrityError as e:
+        st.toast("Error al insertar el usuario: El correo ya existe.")
+    except SQLAlchemyError as e:
+        st.toast(f"Error al insertar el usuario: {e}")
             
-    except Exception as e:
-        st.error(f"Error al insertar el usuario: {e}")
+            
+def hash_password(password):
+    
+    password_bytes = password.encode('utf-8')
+    
+    sha256 = hashlib.sha256()
+    
+    sha256.update(password_bytes)
+    
+    password_hash = sha256.hexdigest()
+    return password_hash
+
+
             
 def handle_registrar():
     print("REGISTRO DE DATOS")
@@ -91,9 +110,7 @@ def handle_registrar():
         st.error("Las contraseñas no coinciden")
         return
     
-    insert_user(nombre, correo, password, st.session_state.campaigns_dict[campaign_name])
+    insert_user(nombre, correo, hash_password(password), st.session_state.campaigns_dict[campaign_name])
     
-    st.toast("Usuario registrado con éxito")
-
         
 render()
