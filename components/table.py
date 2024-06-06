@@ -7,5 +7,5 @@ def Table(data : pd.DataFrame | None = None, parent = st):
     # parent.table(data)
     if data is None:
         data = pd.DataFrame()
-    data = data.set_index("Id").style.set_properties(**{'text-align': 'start'})
+    data = data.style.set_properties(**{'text-align': 'start'})
     parent.write(data.to_html(escape=False), unsafe_allow_html=True)

@@ -1,7 +1,8 @@
 SELECT
 	crm_pernexium.crm_client.*,
-    agent_assignments.*
-FROM 
+    agent_assignments.assignment_id,
+    agent_assignments.agent_id
+FROM
 (
 	SELECT     
 		crm_pernexium.assignments.assignment_id,
@@ -9,7 +10,7 @@ FROM
         crm_pernexium.assignments.credit_id
 	FROM crm_pernexium.assignments
     WHERE
-		crm_pernexium.assignments.agent_id = "<AGENT>"
+		crm_pernexium.assignments.agent_id = "{agent_id}"
 		/* 
 			AND 
 			FECHA Y OTRAS COSAS 
