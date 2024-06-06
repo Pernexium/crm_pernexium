@@ -58,10 +58,10 @@ class SqlClient:
         return dict_names
     
 
-    def insert_user(self, nombre, correo, password, campaign_id, rol):
-        insert_query = text("INSERT INTO users (campaign_id, name, email, pass) VALUES (:campaign_id, :nombre, :correo, :password, :rol)")
+    def insert_user(self, nombre, correo, password, campaign_id, role):
+        insert_query = text("INSERT INTO users (campaign_id, name, email, pass, role) VALUES (:campaign_id, :nombre, :correo, :password, :role)")
         with self.engine.connect() as connection:
-            connection.execute(insert_query, {"campaign_id": campaign_id, "nombre": nombre, "correo": correo, "password": password, "rol": rol})
+            connection.execute(insert_query, {"campaign_id": campaign_id, "nombre": nombre, "correo": correo, "password": password, "role": role})
             connection.commit()
 
 

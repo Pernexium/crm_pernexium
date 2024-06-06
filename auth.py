@@ -13,6 +13,7 @@ def insert_user(name, email, password, campaign_name, rol):
     except IntegrityError as e:
         st.toast("Error al insertar el usuario: El correo ya existe.")
     except SQLAlchemyError as e:
+        print(e)
         st.toast(f"Error al insertar el usuario: {e}")
     finally:
         return success
