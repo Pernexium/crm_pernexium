@@ -2,6 +2,8 @@ import streamlit as st
 from const import SCHEMAS
 import pandas as pd
 from cliente_sql import SqlClient
+import hashlib
+from sqlalchemy import create_engine
 
 def separar_numero(numero):
     if len(numero) != 10 or not numero.isdigit():
@@ -34,6 +36,28 @@ def use_sql_client(func):
 
     return func
 
+def hash_password(password):
+    
+    password_bytes = password.encode('utf-8')
+    
+    sha256 = hashlib.sha256()
+    
+    sha256.update(password_bytes)
+    
+    password_hash = sha256.hexdigest()
+    return password_hash
+
+def get_engine():
+    host = st.secrets["db_credentials"]["host"]
+    database = st.secrets["db_credentials"]["database"]
+    user = st.secrets["db_credentials"]["user"]
+    password = st.secrets["db_credentials"]["password"]
+
+    # Crear la URL de la base de datos
+    DATABASE_URL = f"mysql+mysqlconnector://{user}:{password}@{host}/{database}"
+
+    # Crear el motor de SQLAlchemy
+    return create_engine(DATABASE_URL)
 
 @use_sql_client
 def fetch_assignments():
