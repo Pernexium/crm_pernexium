@@ -2,8 +2,13 @@ import streamlit as st
 import pytz
 from page_config import switch_page
 from components.button import Button
+from components.fields import TextField, PasswordField
+from auth import try_login
 
 st.set_page_config(page_title="CRM", page_icon="./img/logo_pernexium.png", layout="wide")
+
+#TODO: GENERALIZAR
+st.session_state.roles = ['admin', 'supervisor', 'agente']
 
 def render():
 
@@ -16,16 +21,25 @@ def render():
     
     st.header("Base App")
 
+
+        
+    correo = TextField("correo_inicio_sesion", "Correo", "", st, border = False)
+
+    password = PasswordField("password_inicio_sesion", "Contraseña", "", st, border = False)
+
+
     if Button(None, "Login", None, "primary"):
         login()
 
 def login():
-    st.session_state['logged_in'] = dict(
-        agent_id = "1",
-        agent_name = "Juan Pérez",
-        agent_role = "Administrador"
-    )
-    switch_page('home')
+
+    correo = st.session_state.get("correo_inicio_sesion")
+    password = st.session_state.get("password_inicio_sesion")
+    
+    try_login(correo, password)
+
+    if st.session_state.get('logged_in'):
+        switch_page('home')
 
 
 render()

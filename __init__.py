@@ -4,3 +4,4 @@ from . import const
 from . import componentes
 from . import pages
 from . import page_config
+from . import auth

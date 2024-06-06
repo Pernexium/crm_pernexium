@@ -34,7 +34,7 @@ def render(parent = st):
         BR(2, parent)
 
         buscar_tabla = st.session_state.get("busqueda_tabla", None)
-        if buscar_tabla is not None:
+        if buscar_tabla is not None and not buscar_tabla.empty:
             Table(buscar_tabla, parent)
             BR(2, parent)
             

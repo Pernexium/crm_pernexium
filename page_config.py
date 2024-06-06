@@ -43,6 +43,8 @@ def require_login(page):
     return wrapper
 
 def logout():
+    if st.session_state.get("assignments"):
+        del st.session_state["assignments"]
     return_login(False)
 
 def return_login(failed_redirection = False):

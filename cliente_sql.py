@@ -13,16 +13,15 @@ class SqlClient:
         query_insert_interaction_result = query.read()
     with open("./sql/search_credit.sql", 'r') as query:
         query_search_credit = query.read()
-
-
-
+    with open("./sql/login_email_lookup.sql", 'r') as query:
+        query_login_email_lookup = query.read()
 
 
     def __init__(self, user, password, host, database, port):
         self.engine = create_engine(f'mysql+pymysql://{user}:{password}@{host}:{port}/{database}')
 
-    def get_agent_assignments(self, agent_id):
-        return self.pandas_query(self.query_get_agent_assignments.format(agent_id = agent_id))
+    def get_agent_assignments(self, user_id):
+        return self.pandas_query(self.query_get_agent_assignments.format(user_id = user_id))
     
     def get_interaction_results(self, credit_id):
         return self.pandas_query(self.query_get_interaction_results.format(credit_id = credit_id))
@@ -50,9 +49,31 @@ class SqlClient:
     def search_credit(self, credit_id, name, phone_number):
         #TODO: Afinar dependiendo de si se busca por credit_id, name o phone_number
         return self.pandas_query(self.query_search_credit.format(credit_id = credit_id, name = name, phone_number = phone_number))
+    
+    def get_campaings_name(self):
+        query = text("SELECT campaign_id, name FROM campaigns")
+        with self.engine.connect() as connection:
+            result = connection.execute(query)
+            dict_names = {x[1]: x[0] for x in result}
+        return dict_names
+    
 
+    def insert_user(self, nombre, correo, password, campaign_id, rol):
+        insert_query = text("INSERT INTO users (campaign_id, name, email, pass) VALUES (:campaign_id, :nombre, :correo, :password, :rol)")
+        with self.engine.connect() as connection:
+            connection.execute(insert_query, {"campaign_id": campaign_id, "nombre": nombre, "correo": correo, "password": password, "rol": rol})
+            connection.commit()
+
+
+    def login_email_lookup(self, email):
+        query = text(self.query_login_email_lookup.format(email = email))
+        with self.engine.connect() as connection:
+            result = connection.execute(query)
+            row = result.fetchone()
+            if row:
+                return dict(zip(result.keys(), row))
+            return None
 
     def pandas_query(self, query):
         with self.engine.connect() as connection:
             return pd.read_sql(query, connection)
-        

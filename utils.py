@@ -48,8 +48,9 @@ def use_sql_client(func):
             st.session_state['sql_client'] = SqlClient(**st.secrets.db_credentials)
 
         try: 
-            func(*args, **kwargs)
+            return func(*args, **kwargs)
         except SQLAlchemyError as e:
+            print(e)
             st.error("Ocurrió un error en la base de datos.")
             st.stop()
     return wrapper
@@ -58,8 +59,8 @@ def use_sql_client(func):
 @use_sql_client
 def fetch_assignments():
     if st.session_state.get('assignments') is None:
-        print(f"FECTCHING ASSIGNMENTS PARA USUARIO: {user_data('agent_name'), user_data('agent_id')}")
-        assigmnents = st.session_state.sql_client.get_agent_assignments(user_data('agent_id'))
+        print(f"FECTCHING ASSIGNMENTS PARA USUARIO: {user_data('agent_name'), user_data('user_id')}")
+        assigmnents = st.session_state.sql_client.get_agent_assignments(user_data('user_id'))
         st.session_state['assignments'] = Assignments(
             assignments= assigmnents,
             current_assignment = 0,
@@ -118,3 +119,11 @@ def insert_interaction_result(assignment_id, contact_date, contact_status, conta
 @use_sql_client
 def search_credit(credit_id, name, phone_number):
     st.session_state["busqueda_tabla"] = st.session_state.sql_client.search_credit(credit_id, name, phone_number)
+
+
+
+@use_sql_client
+def get_campaings_name():
+    if st.session_state.get("campaigns") is None:
+        print("FETCHING CAMPAIGNS")
+        st.session_state["campaigns"] = st.session_state.sql_client.get_campaings_name()

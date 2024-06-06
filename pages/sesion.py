@@ -21,6 +21,10 @@ def render(parent = st):
     fetch_assignments()
 
     assignments = st.session_state.assignments
+    if assignments.assignments.empty:
+        parent.error("No hay asignaciones disponibles")
+        return
+    
     current_assignment = assignments.assignments.iloc[assignments.current_assignment].to_dict()
     credit_id = current_assignment["credit_id"]
 
