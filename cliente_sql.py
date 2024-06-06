@@ -46,9 +46,9 @@ class SqlClient:
             )
             connection.commit()
     
-    def search_credit(self, credit_id, name, phone_number):
+    def search_credit(self, valor):
         #TODO: Afinar dependiendo de si se busca por credit_id, name o phone_number
-        return self.pandas_query(self.query_search_credit.format(credit_id = credit_id, name = name, phone_number = phone_number))
+        return self.pandas_query(self.query_search_credit.format(name = valor))
     
     def get_campaings_name(self):
         query = text("SELECT campaign_id, name FROM campaigns")
