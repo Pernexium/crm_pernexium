@@ -20,16 +20,13 @@ def render(parent = st):
         parent.header("Busqueda")
 
         with parent.container(border = True):
-            id, nombre, telefono, buscar = parent.columns(4, gap = "large")
-
-            with id:
-                TextField("buscar_credit_id", "ID Crédito", "", parent, border = False)
-            with nombre:
-                TextField("buscar_name", "Nombre", "", parent, border = False)
-            with telefono:
-                TextField("buscar_phone_number", "Teléfono", "", parent, border = False)
+            valor, buscar = parent.columns(2, gap = "large")
+            with valor:
+                TextField("buscar_valor", "ID, teléfono o nombre", "", parent, border = False)
+            
             with buscar:
                 Button("buscar_contacto", "Buscar", handle_buscar , "primary", parent)
+            
 
         BR(2, parent)
 
@@ -52,9 +49,7 @@ def render(parent = st):
 def handle_buscar():
 
     data = dict(
-        credit_id = session_state('buscar_credit_id'),
-        name = session_state('buscar_name'),
-        phone_number = session_state('buscar_phone_number'),
+        valor = session_state('buscar_valor')
     )
 
     if all(map(lambda x: not x, data.values())): 

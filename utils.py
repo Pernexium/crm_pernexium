@@ -117,8 +117,8 @@ def insert_interaction_result(assignment_id, contact_date, contact_status, conta
 
 
 @use_sql_client
-def search_credit(credit_id, name, phone_number):
-    st.session_state["busqueda_tabla"] = st.session_state.sql_client.search_credit(credit_id, name, phone_number)
+def search_credit(valor):
+    st.session_state["busqueda_tabla"] = st.session_state.sql_client.search_credit(valor)
 
 
 
