@@ -1,6 +1,7 @@
 SELECT
 	crm_pernexium.crm_client.*,
-    agent_assignments.*
+    agent_assignments.assignment_id,
+    agent_assignments.agent_id
 FROM 
 (
 	SELECT     

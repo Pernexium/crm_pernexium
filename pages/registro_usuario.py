@@ -6,8 +6,8 @@ from page_config import inject_navbar, require_login
 
 st.set_page_config(page_title="CRM - Registro Usuario", page_icon="./img/logo_pernexium.png", layout="wide")
 
-@inject_navbar
 @require_login
+@inject_navbar
 def render(parent = st):
     parent.header("Registro de Usuario")
 
