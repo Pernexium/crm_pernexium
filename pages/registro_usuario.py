@@ -64,6 +64,7 @@ def handle_registrar():
     
     if insert_user(nombre, correo, password, st.session_state.campaigns[campaign_name], rol):
         # Clear fields
+        st.toast("Usuario registrado con éxito")
         st.session_state.nombre_registro_usuario = None
         st.session_state.correo_registro_usuario = None
         st.session_state.password_registro_usuario = None
