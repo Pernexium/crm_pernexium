@@ -11,7 +11,7 @@ FROM
     INNER JOIN crm_pernexium.assignments
 		ON crm_pernexium.credits.credit_id = crm_pernexium.assignments.credit_id
 	WHERE
-		crm_pernexium.assignments.user_id = "1"
+		crm_pernexium.assignments.user_id = 12
 ) as agent_credits
 INNER JOIN crm_pernexium.payments
 	ON agent_credits.credit_id = crm_pernexium.payments.credit_id

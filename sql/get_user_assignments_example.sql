@@ -1,7 +1,7 @@
 SELECT
 	crm_pernexium.crm_client.*,
-    agent_assignments.assignment_id,
-    agent_assignments.user_id
+    user_assignments.assignment_id,
+    user_assignments.user_id
 FROM
 (
 	SELECT     
@@ -10,13 +10,13 @@ FROM
         crm_pernexium.assignments.credit_id
 	FROM crm_pernexium.assignments
     WHERE
-		crm_pernexium.assignments.user_id = "{user_id}"
+		crm_pernexium.assignments.user_id = 12
 		/* 
 			AND 
 			FECHA Y OTRAS COSAS 
         */
-) AS agent_assignments
+) AS user_assignments
 
 INNER JOIN crm_pernexium.crm_client
-	ON agent_assignments.credit_id = crm_pernexium.crm_client.credit_id
+	ON user_assignments.credit_id = crm_pernexium.crm_client.credit_id
 ;
