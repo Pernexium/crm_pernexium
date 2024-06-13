@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from components.table import Table
-from components.fields import DataField
+from components.fields import DataField, SelectField
 from components.br import BR
 from components.button import Button
 from containers.registro_dictaminacion import RegistroDictaminacion
@@ -73,9 +73,41 @@ def render(parent = st):
             contacto, pagos, chatbot = parent.tabs(["Contacto", "Pagos", "Chatbot"])
 
             with contacto:
-                Table(interactions, parent)
+                cols1_, cols2_, cols3_  = parent.columns(3)
+
+                with cols1_: 
+                    DataField("Interacciones:", len(interactions), parent)
+                    
+                with cols2_: 
+                    DataField("Eficiencia:", round(len(interactions.query("contact_status_name == 'Contacto'"))/len(interactions),2), parent)
+                    
+                with cols3_: 
+                    
+                    DataField("Promesas:", len(interactions.query("contact_substatus_name == 'Promesa de Pago'")), parent)
+                
+                
+                
+                filter_contacto = SelectField("select_filter", "Selecciona el filtro", ['Todos','Contacto', 'No Contacto'], parent = st, border = False)
+                if filter_contacto == 'Todos':
+                    interactions_filtered = interactions.copy()
+                else:
+                    interactions_filtered = interactions.query(f"contact_status_name == '{filter_contacto}'")
+                Table(interactions_filtered, parent)
 
             with pagos:
+                # TODO Query para solo quedarnos con los pagos en cierto mes
+                pagos_en_el_periodo = payments.copy()
+                col1_, col2_, col3_  = parent.columns(3)
+
+                with col1_: 
+                    DataField("Monto total:", pagos_en_el_periodo.payment_amount.sum(), parent)
+                    
+                with col2_: 
+                    DataField("Cantidad:", len(pagos_en_el_periodo), parent)
+                    
+                with col3_: 
+                    DataField("Pago medio:", pagos_en_el_periodo.payment_amount.mean(), parent)
+                    
                 Table(payments, parent)
 
             with chatbot:

@@ -28,5 +28,5 @@ INNER JOIN crm_pernexium.contact_status AS parent_contact_status
 	
 INNER JOIN crm_pernexium.contact_status AS sub_contact_status
 	ON sub_contact_status.contact_status_id = creditAssignments.contact_substatus_id
-
+order by contact_date desc
 ;
