@@ -10,7 +10,7 @@ FROM
         crm_pernexium.assignments.credit_id
 	FROM crm_pernexium.assignments
     WHERE
-		crm_pernexium.assignments.user_id = 12
+		crm_pernexium.assignments.user_id = 14
 		/* 
 			AND 
 			FECHA Y OTRAS COSAS 

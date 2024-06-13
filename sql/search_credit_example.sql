@@ -1,16 +1,27 @@
 SELECT 
-	search.*,
-    crm_pernexium.assignments.assignment_id
+	search.client_id,
+    crm_pernexium.assignments.assignment_id,
+    search.credit_id,
+    search.name AS client_name,
+    search.product_name,
+    search.current_balance, 
+    search.balance_to_settle,
+    crm_pernexium.assignments.reference as assignment_reference
+    
 FROM (
-SELECT
-	* 
+	SELECT
+		* 
 	FROM crm_pernexium.crm_client 
+
 	WHERE 
-		crm_pernexium.crm_client.name COLLATE utf8mb4_general_ci LIKE '%%'
+		/*AFINAR EN PYTHON*/
+		crm_pernexium.crm_client.name COLLATE utf8mb4_general_ci LIKE '%2%'
 		OR
-		crm_pernexium.crm_client.phone_number = "5539086157"
+        /*
+			crm_pernexium.crm_client.phone_number = "2"
 		OR 
-		crm_pernexium.crm_client.credit_id = "079005238085"
+		*/
+		crm_pernexium.crm_client.credit_id = 2
 ) as search
 
 INNER JOIN crm_pernexium.assignments
