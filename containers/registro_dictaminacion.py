@@ -1,13 +1,15 @@
 import streamlit as st
 from components.fields import DataField, SelectField, TextArea, DateField, NumberField
-from const import ARBOL_DICTAMINACION
 from components.button import Button
 from components.br import BR
-from utils import session_state, insert_interaction_result, get_credit_interactions
+from utils import session_state, insert_interaction_result, get_credit_interactions, get_contact_status, get_corr_contact_substatus, get_id_from_name
 from datetime import datetime
 
 
 def RegistroDictaminacion(id, credito, parent = st, border = True):
+
+
+    get_contact_status()
 
     with parent.container(border = border):
         parent.subheader("Dictaminación")
@@ -15,11 +17,11 @@ def RegistroDictaminacion(id, credito, parent = st, border = True):
         col1, col2  = parent.columns(2)
 
         with col1:
-            dictamen = SelectField(f"dictamen_{id}", "Selecciona el Dictamen", ARBOL_DICTAMINACION.keys(),  parent)
+            dictamen = SelectField(f"dictamen_{id}", "Selecciona el Dictamen", st.session_state.contact_status.name,  parent)
         with col2: 
-            subdictamen = SelectField(f"subdictamen_{id}", "Selecciona el Subdictamen", ARBOL_DICTAMINACION[dictamen], parent)
+            subdictamen = SelectField(f"subdictamen_{id}", "Selecciona el Subdictamen",  get_corr_contact_substatus(dictamen).name, parent)
 
-        if subdictamen == "PROMESA DE PAGO":
+        if subdictamen == "Promesa de Pago":
             with parent.container(border = True):
                 parent.write("**Promesa de Pago**")
                 BR(1, parent)
@@ -36,19 +38,18 @@ def RegistroDictaminacion(id, credito, parent = st, border = True):
 def handle_guardar(id, credito):
     
     subdictamen = session_state(f'subdictamen_{id}')
-    promesa_de_pago = subdictamen == "PROMESA DE PAGO"
-
-    today = datetime.today().strftime('%Y-%m-%d')
+    promesa_de_pago = subdictamen == "Promesa de Pago"
 
     data = dict(
         assignment_id= credito["assignment_id"],
-        contact_date = today,
-        contact_status= session_state(f'dictamen_{id}'),
-        contact_substatus= subdictamen,
+        contact_status_id= get_id_from_name(session_state(f'dictamen_{id}'), st.session_state.contact_status).contact_status_id,
+        contact_substatus_id= get_id_from_name(subdictamen, st.session_state.sub_contact_status).contact_status_id,
         comments= session_state(f'comentarios_{id}') or 'NULL',
         payment_promise_date= session_state(f'promesa_fecha_{id}') if promesa_de_pago else 'NULL',
         payment_promise_amount= session_state(f'promesa_cantidad_{id}') if promesa_de_pago else 'NULL',
     )
+
+    print(data)
 
     insert_interaction_result(**data)
 

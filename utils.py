@@ -1,5 +1,4 @@
 import streamlit as st
-from const import SCHEMAS
 import pandas as pd
 from cliente_sql import SqlClient
 from sqlalchemy.exc import SQLAlchemyError
@@ -59,8 +58,8 @@ def use_sql_client(func):
 @use_sql_client
 def fetch_assignments():
     if st.session_state.get('assignments') is None:
-        print(f"FECTCHING ASSIGNMENTS PARA USUARIO: {user_data('agent_name'), user_data('user_id')}")
-        assigmnents = st.session_state.sql_client.get_agent_assignments(user_data('user_id'))
+        print(f"FECTCHING ASSIGNMENTS PARA USUARIO: {user_data('name'), user_data('user_id')}")
+        assigmnents = st.session_state.sql_client.get_user_assignments(user_data('user_id'))
         st.session_state['assignments'] = Assignments(
             assignments= assigmnents,
             current_assignment = 0,
@@ -76,7 +75,7 @@ def fetch_assignments():
 def get_credit_interactions(credit_id):
     if st.session_state.assignments.interactions[credit_id] is None:
         print(f"FETCHING CREDIT INTERACTIONS: {credit_id}")
-        interactions = st.session_state.sql_client.get_interaction_results(credit_id).set_index('opinion_id')
+        interactions = st.session_state.sql_client.get_interaction_results(credit_id).set_index('interaction_id')
         st.session_state.assignments.interactions[credit_id] = interactions
 
 
@@ -103,12 +102,11 @@ def get_all_session_tables(credit_id):
 
 
 @use_sql_client
-def insert_interaction_result(assignment_id, contact_date, contact_status, contact_substatus, comments, payment_promise_date, payment_promise_amount):
+def insert_interaction_result(assignment_id, contact_status_id, contact_substatus_id, comments, payment_promise_date, payment_promise_amount):
     st.session_state.sql_client.insert_interaction_result(
         assignment_id = assignment_id,
-        contact_date = contact_date,
-        contact_status = contact_status,
-        contact_substatus = contact_substatus,
+        contact_status_id = contact_status_id,
+        contact_substatus_id = contact_substatus_id,
         comments = comments,
         payment_promise_date = payment_promise_date,
         payment_promise_amount = payment_promise_amount
@@ -117,13 +115,39 @@ def insert_interaction_result(assignment_id, contact_date, contact_status, conta
 
 
 @use_sql_client
-def search_credit(valor):
-    st.session_state["busqueda_tabla"] = st.session_state.sql_client.search_credit(valor)
+def search_credit(value):
+    st.session_state["busqueda_tabla"] = st.session_state.sql_client.search_credit(value).set_index('credit_id')
 
 
 
 @use_sql_client
-def get_campaings_name():
+def get_campaings():
     if st.session_state.get("campaigns") is None:
         print("FETCHING CAMPAIGNS")
-        st.session_state["campaigns"] = st.session_state.sql_client.get_campaings_name()
+        st.session_state["campaigns"] = st.session_state.sql_client.get_campaings()
+
+
+@use_sql_client
+def get_roles():
+    if st.session_state.get("roles") is None:
+        print("FETCHING ROLES")
+        st.session_state["roles"] = st.session_state.sql_client.get_roles()
+
+@use_sql_client
+def get_contact_status():
+    if st.session_state.get("contact_status") is None:
+        print("FETCHING CONTACT STATUS")
+        contact_status = st.session_state.sql_client.get_contact_status()
+        sub_contact_status = contact_status[contact_status.parent_contact_status_id.notnull()]
+        contact_status = contact_status[contact_status.parent_contact_status_id.isnull()]
+
+        st.session_state["contact_status"] = contact_status
+        st.session_state["sub_contact_status"] = sub_contact_status
+
+def get_id_from_name(name, df):
+    return df.set_index('name').loc[name]
+
+def get_corr_contact_substatus(contact_status):
+    get_contact_status()
+    contact_status_id = get_id_from_name(contact_status, st.session_state.get("contact_status"))['contact_status_id']
+    return st.session_state.get("sub_contact_status")[st.session_state.get("sub_contact_status").parent_contact_status_id == contact_status_id]

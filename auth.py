@@ -4,10 +4,10 @@ from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from utils import use_sql_client
 
 @use_sql_client
-def insert_user(name, email, password, campaign_name, rol):
+def insert_user(name, email, password, campaign_id, role_id):
     success = False
     try:
-        st.session_state.sql_client.insert_user(name, email, hash_password(email, password), campaign_name, rol)
+        st.session_state.sql_client.insert_user(name, email, hash_password(email, password), campaign_id, role_id)
         st.toast("Usuario registrado con éxito")
         success = True
     except IntegrityError as e:
@@ -35,10 +35,8 @@ def try_login(email, password):
         st.error("Correo no registrado.")
         st.session_state['logged_in'] = False
         return
-    
-    user["user_id"] = 1
 
-    if user["pass"] != hash_password(email, password):
+    if user["password"] != hash_password(email, password):
         st.error("Contraseña incorrecta.")
         st.session_state['logged_in'] = False
         return

@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-from const import ARBOL_DICTAMINACION
 from components.table import Table
 from components.fields import DataField
 from components.br import BR
@@ -41,7 +40,16 @@ def render(parent = st):
     
     with parent.container(border = True):
 
-        parent.header(current_assignment["name"])
+        col1, col2, col3 = parent.columns([2, 1, 1])
+
+        with col1: 
+            parent.header(current_assignment["name"])
+
+        with col2:
+            DataField("Campaña", current_assignment["campaign_name"], parent)
+
+        with col3:
+            DataField("Segmento", current_assignment["segment_name"], parent)
 
         BR(3, parent)
 
@@ -49,10 +57,10 @@ def render(parent = st):
 
         with col1: 
             DataField("ID", current_assignment["client_id"], parent)
-            DataField("Teléfono", current_assignment["phone_number"], parent)
-            DataField("Correo", current_assignment["email"], parent)
+            DataField("Teléfono", current_assignment.get("phone"), parent)
+            DataField("Correo", current_assignment.get("email"), parent)
         with col2: 
-            DataField("Producto", current_assignment["product"], parent)
+            DataField("Producto", current_assignment.get("product_name"), parent)
             DataField("Saldo Vencido Actual", current_assignment["current_balance"], parent)
             DataField("Saldo a Liquidar", current_assignment["balance_to_settle"], parent)
 

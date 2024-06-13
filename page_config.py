@@ -31,7 +31,7 @@ def inject_navbar(page):
 
 def require_login(page):
     def wrapper():
-        if not st.session_state.get('logged_in'):
+        if not st.session_state.get('logged_in') and st.secrets.auth.require_login:
             return_login(True)
 
         _, container = st.columns([5/6, 1/6])

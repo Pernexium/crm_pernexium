@@ -6,7 +6,6 @@ from components.table import Table
 from components.br import BR
 from page_config import inject_navbar, inject_stylesheet, require_login
 from utils import session_state, search_credit
-from const import SCHEMAS
 import pandas as pd
 
 st.set_page_config(page_title="CRM - Búsqueda", page_icon="./img/logo_pernexium.png", layout="wide")
@@ -37,9 +36,9 @@ def render(parent = st):
             
             col1, _ = parent.columns([1, 1])
             with col1:
-                id_seleccionado = SelectField("buscar_id_tabla", "Selecciona un crédito", buscar_tabla['credit_id'], parent, border = False)
+                id_seleccionado = SelectField("buscar_id_tabla", "Selecciona un crédito", buscar_tabla.index, parent, border = False)
             
-            credito_seleccionado = buscar_tabla[buscar_tabla['credit_id'] == id_seleccionado].iloc[0].to_dict()
+            credito_seleccionado = buscar_tabla.loc[id_seleccionado]
 
             BR(2, parent)
 
@@ -49,7 +48,7 @@ def render(parent = st):
 def handle_buscar():
 
     data = dict(
-        valor = session_state('buscar_valor')
+        value = session_state('buscar_valor')
     )
 
     if all(map(lambda x: not x, data.values())): 
